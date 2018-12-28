@@ -22,7 +22,7 @@ func Scan(scanInstructions ScanInstructions) error {
 	//if err != nil {
 	//	return fmt.Errorf("could not intialize command: %s", err)
 	//}
-	if err = cmd.Run(); err != nil {
+	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("error encountered when executing scan: %s", err)
 	}
 	//if err := sane.Init(); err != nil {
