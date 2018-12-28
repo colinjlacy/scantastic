@@ -18,7 +18,7 @@ func Scan(scanInstructions ScanInstructions) error {
 	if scanInstructions.Foldername == "" {
 		return fmt.Errorf("bad Request: foldername was not set")
 	}
-	cmd := exec.Command("scanimage", scanInstructions.Filename)
+	cmd := exec.Command("scanimage", scanInstructions.Filename + ".pnm")
 	//if err != nil {
 	//	return fmt.Errorf("could not intialize command: %s", err)
 	//}
