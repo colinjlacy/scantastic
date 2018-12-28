@@ -3,6 +3,7 @@ package scanner
 import (
 	"fmt"
 	//"github.com/tjgq/sane"
+	"log"
 	"os/exec"
 )
 
@@ -23,6 +24,7 @@ func Scan(scanInstructions ScanInstructions) error {
 	//	return fmt.Errorf("could not intialize command: %s", err)
 	//}
 	if err := cmd.Run(); err != nil {
+		log.Printf(err.Error())
 		return fmt.Errorf("error encountered when executing scan: %s", err)
 	}
 	//if err := sane.Init(); err != nil {
