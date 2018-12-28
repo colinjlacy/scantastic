@@ -3,8 +3,7 @@ package scanner
 import (
 	"fmt"
 	//"github.com/tjgq/sane"
-	"log"
-	"os"
+	"os/exec"
 )
 
 type ScanInstructions struct {
