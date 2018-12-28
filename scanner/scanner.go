@@ -19,9 +19,6 @@ func Scan(scanInstructions ScanInstructions) error {
 		return fmt.Errorf("bad Request: foldername was not set")
 	}
 	cmd := exec.Command("scanimage", scanInstructions.Filename)
-	if err = cmd.Run(); err != nil {
-		return fmt.Errorf("error encountered when executing scan: %s", err)
-	}
 	//if err := sane.Init(); err != nil {
 	//	return fmt.Errorf("could not start scanner session: %s", err)
 	//}
