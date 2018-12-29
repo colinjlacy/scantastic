@@ -19,26 +19,26 @@ func Scan(scanInstructions ScanInstructions) error {
 	if scanInstructions.Foldername == "" {
 		return fmt.Errorf("bad Request: foldername was not set")
 	}
-	//if err := sane.Init(); err != nil {
-	//	return fmt.Errorf("could not start scanner session: %s", err)
-	//}
-	//c, err := sane.Open("")
-	//defer c.Close()
-	//if err != nil {
-	//	return fmt.Errorf("could not open a connection to a scanner: %s", err)
-	//}
-	//i, err := c.ReadImage()
-	//if err != nil {
-	//	return fmt.Errorf("could not read image from scanner: %s", err)
-	//}
-	i := []byte("hello\ngo\n")
-	f, err := os.Create(scanInstructions.Foldername + "/" + scanInstructions.Filename + ".txt")
+	if err := sane.Init(); err != nil {
+		return fmt.Errorf("could not start scanner session: %s", err)
+	}
+	c, err := sane.Open("")
+	defer c.Close()
+	if err != nil {
+		return fmt.Errorf("could not open a connection to a scanner: %s", err)
+	}
+	i, err := c.ReadImage()
+	if err != nil {
+		return fmt.Errorf("could not read image from scanner: %s", err)
+	}
+	//i := []byte("hello\ngo\n")
+	f, err := os.Create("./" + scanInstructions.Filename + ".txt")
 	if err != nil {
 		return fmt.Errorf("could not create a file at the desired location: %s", err)
 	}
 	defer f.Close()
 	f.Write(i)
-	//jpeg.Encode(f, i, nil)
+	jpeg.Encode(f, i, nil)
 	return nil
 }
 
