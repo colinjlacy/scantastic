@@ -23,7 +23,11 @@ func Scan(scanInstructions ScanInstructions) error {
 	if err := sane.Init(); err != nil {
 		return fmt.Errorf("could not start scanner session: %s", err)
 	}
-	c, err := sane.Open("")
+	devs, err := sane.Devices()
+	if err != nil {
+		return fmt.Errorf("could not get a list of devices: %s", err)
+	}
+	c, err := sane.Open(devs[0].Name)
 	defer c.Close()
 	if err != nil {
 		return fmt.Errorf("could not open a connection to a scanner: %s", err)
