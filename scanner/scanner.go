@@ -27,6 +27,7 @@ func Scan(scanInstructions ScanInstructions) error {
 	if err != nil {
 		return fmt.Errorf("could not get a list of devices: %s", err)
 	}
+	fmt.Printf("device list length: %v", len(devs))
 	c, err := sane.Open(devs[0].Name)
 	defer c.Close()
 	if err != nil {
