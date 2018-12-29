@@ -25,12 +25,10 @@ func scanImage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		jsonData := map[string]string{"error": err.Error()}
-		jsonValue, _ := json.Marshal(jsonData)
-		w.Write([]byte(jsonValue))
+		json.NewEncoder(w).Encode(jsonData)
+		//w.Write([]byte(err.Error()))
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
 	jsonData := map[string]string{"path": result}
-	jsonValue, _ := json.Marshal(jsonData)
-	w.Write([]byte(jsonValue))
+	json.NewEncoder(w).Encode(jsonData)
 }
