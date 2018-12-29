@@ -2,6 +2,7 @@ package scanner
 
 import (
 	"fmt"
+	"log"
 	"github.com/tjgq/sane"
 	"scantastic/file-access"
 )
@@ -39,3 +40,13 @@ func Scan(scanInstructions ScanInstructions) error {
 	return nil
 }
 
+func Init() {
+	err := sane.Init()
+	if err != nil {
+		log.Fatal("Could not start scanner session", err)
+	}
+}
+
+func End() {
+	sane.Exit()
+}
