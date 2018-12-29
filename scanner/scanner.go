@@ -33,7 +33,10 @@ func Scan(scanInstructions ScanInstructions) error {
 	if err != nil {
 		return fmt.Errorf("could not read image from scanner: %s", err)
 	}
-	file_access.WriteImageFile(i, scanInstructions.Filename, scanInstructions.Foldername)
+	err = file_access.WriteImageFile(i, scanInstructions.Filename, scanInstructions.Foldername)
+	if err != nil {
+		return fmt.Errorf("%s", err)
+	}
 	return nil
 }
 

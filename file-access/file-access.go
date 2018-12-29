@@ -8,7 +8,7 @@ import (
 )
 
 // TODO: make env var
-var basePath string  = "~/scanned/"
+var basePath string  = "~/Documents/scanned/"
 
 func WriteImageFile(i image.Image, filename string, filepath string) error {
 	fullpath := basePath + filepath
