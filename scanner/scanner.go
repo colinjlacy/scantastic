@@ -5,6 +5,7 @@ import (
 	"github.com/tjgq/sane"
 	"log"
 	"os"
+	"image/jpeg"
 )
 
 type ScanInstructions struct {
@@ -31,13 +32,11 @@ func Scan(scanInstructions ScanInstructions) error {
 	if err != nil {
 		return fmt.Errorf("could not read image from scanner: %s", err)
 	}
-	//i := []byte("hello\ngo\n")
-	f, err := os.Create("./" + scanInstructions.Filename + ".txt")
+	f, err := os.Create("./" + scanInstructions.Filename + ".jpg")
 	if err != nil {
 		return fmt.Errorf("could not create a file at the desired location: %s", err)
 	}
 	defer f.Close()
-	f.Write(i)
 	jpeg.Encode(f, i, nil)
 	return nil
 }
