@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"github.com/tjgq/sane"
 	"log"
-	"os"
-	"image/jpeg"
+	"scantastic/file-access"
 )
 
 type ScanInstructions struct {
@@ -20,14 +19,11 @@ func Scan(scanInstructions ScanInstructions) error {
 	if scanInstructions.Foldername == "" {
 		return fmt.Errorf("bad Request: foldername was not set")
 	}
-	if err := sane.Init(); err != nil {
-		return fmt.Errorf("could not start scanner session: %s", err)
-	}
 	devs, err := sane.Devices()
 	if err != nil {
 		return fmt.Errorf("could not get a list of devices: %s", err)
 	}
-	fmt.Printf("device list length: %v", len(devs))
+	// TODO: should we always pick the first device?
 	c, err := sane.Open(devs[0].Name)
 	defer c.Close()
 	if err != nil {
@@ -37,12 +33,7 @@ func Scan(scanInstructions ScanInstructions) error {
 	if err != nil {
 		return fmt.Errorf("could not read image from scanner: %s", err)
 	}
-	f, err := os.Create("./" + scanInstructions.Filename + ".jpg")
-	if err != nil {
-		return fmt.Errorf("could not create a file at the desired location: %s", err)
-	}
-	defer f.Close()
-	jpeg.Encode(f, i, nil)
+	file_access.WriteImageFile(i, scanInstructions.Filename, scanInstructions.Foldername)
 	return nil
 }
 
