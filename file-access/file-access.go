@@ -11,17 +11,18 @@ import (
 var basePath string  = "~/scanned/"
 
 func WriteImageFile(i image.Image, filename string, filepath string) error {
-	e, err := pathExists(filepath)
+	fullpath := basePath + filepath
+	e, err := pathExists(fullpath)
 	if err != nil {
 		return fmt.Errorf("could not determine the existence of the desired location: %s", err)
 	}
 	if !e {
-		err = createPath(filepath)
+		err = createPath(fullpath)
 		if err != nil {
 			return fmt.Errorf("could not create the folder path to the desired location: %s", err)
 		}
 	}
-	f, err := os.Create(basePath + filepath + "/" + filename + ".jpg")
+	f, err := os.Create(fullpath + "/" + filename + ".jpg")
 	if err != nil {
 		return fmt.Errorf("could not create a file at the desired location: %s", err)
 	}
