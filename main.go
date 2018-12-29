@@ -20,10 +20,13 @@ func main() {
 func scanImage(w http.ResponseWriter, r *http.Request) {
 	var scanInstructions scanner.ScanInstructions
 	_ = json.NewDecoder(r.Body).Decode(&scanInstructions)
-	if err := scanner.Scan(scanInstructions); err != nil {
+	result, err := scanner.Scan(scanInstructions)
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
 	}
-	json.NewEncoder(w).Encode(scanInstructions)
+	jsonData := map[string]string{"path": result}
+	jsonValue, _ := json.Marshal(jsonData)
+	json.NewEncoder(w).Encode(jsonValue)
 }
