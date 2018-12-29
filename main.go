@@ -20,6 +20,7 @@ func main() {
 func scanImage(w http.ResponseWriter, r *http.Request) {
 	var scanInstructions scanner.ScanInstructions
 	_ = json.NewDecoder(r.Body).Decode(&scanInstructions)
+	log.Println(scanInstructions)
 	result, err := scanner.Scan(scanInstructions)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
