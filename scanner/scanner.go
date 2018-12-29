@@ -2,9 +2,8 @@ package scanner
 
 import (
 	"fmt"
-	//"github.com/tjgq/sane"
-	"log"
-	"os/exec"
+	"github.com/tjgq/sane"
+	"scantastic/file-access"
 )
 
 type ScanInstructions struct {
@@ -19,34 +18,24 @@ func Scan(scanInstructions ScanInstructions) error {
 	if scanInstructions.Foldername == "" {
 		return fmt.Errorf("bad Request: foldername was not set")
 	}
-	cmd := exec.Command("/bin/sh", "-c", "sudo scanimage > " + scanInstructions.Filename + ".pnm")
-	//if err != nil {
-	//	return fmt.Errorf("could not intialize command: %s", err)
-	//}
-	if err := cmd.Run(); err != nil {
-		log.Printf(err.Error())
-		return fmt.Errorf("error encountered when executing scan: %s", err)
+	devs, err := sane.Devices()
+	if err != nil {
+		return fmt.Errorf("could not get a list of devices: %s", err)
 	}
-	//if err := sane.Init(); err != nil {
-	//	return fmt.Errorf("could not start scanner session: %s", err)
-	//}
-	//c, err := sane.Open("")
-	//defer c.Close()
-	//if err != nil {
-	//	return fmt.Errorf("could not open a connection to a scanner: %s", err)
-	//}
-	//i, err := c.ReadImage()
-	//if err != nil {
-	//	return fmt.Errorf("could not read image from scanner: %s", err)
-	//}
-	//i := []byte("hello\ngo\n")
-	//f, err := os.Create(scanInstructions.Foldername + "/" + scanInstructions.Filename + ".txt")
-	//if err != nil {
-	//	return fmt.Errorf("could not create a file at the desired location: %s", err)
-	//}
-	//defer f.Close()
-	//f.Write(i)
-	//jpeg.Encode(f, i, nil)
+	// TODO: should we always pick the first device?
+	c, err := sane.Open(devs[0].Name)
+	defer c.Close()
+	if err != nil {
+		return fmt.Errorf("could not open a connection to a scanner: %s", err)
+	}
+	i, err := c.ReadImage()
+	if err != nil {
+		return fmt.Errorf("could not read image from scanner: %s", err)
+	}
+	err = file_access.WriteImageFile(i, scanInstructions.Filename, scanInstructions.Foldername)
+	if err != nil {
+		return fmt.Errorf("%s", err)
+	}
 	return nil
 }
 

@@ -11,17 +11,16 @@ import (
 // our main function
 func main() {
 	router := mux.NewRouter()
-	//scanner.Init()
-	//defer scanner.End()
-	router.HandleFunc("/scan", ScanImage).Methods("POST")
+	scanner.Init()
+	defer scanner.End()
+	router.HandleFunc("/scan", scanImage).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
 
-func ScanImage(w http.ResponseWriter, r *http.Request) {
+func scanImage(w http.ResponseWriter, r *http.Request) {
 	var scanInstructions scanner.ScanInstructions
 	_ = json.NewDecoder(r.Body).Decode(&scanInstructions)
-	err := scanner.Scan(scanInstructions)
-	if err != nil {
+	if err := scanner.Scan(scanInstructions); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
