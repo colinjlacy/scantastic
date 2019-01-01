@@ -10,7 +10,7 @@ func ThisImageFile(folderpath , filename string) (thumbBytes []byte, err error) 
 	mw := imagick.NewMagickWand()
 	defer mw.Destroy()
 
-	if err := mw.ReadImage(folderpath + "/" + filename); err != nil {
+	if err := mw.ReadImage(folderpath + "/" + filename + ".jpg"); err != nil {
 		return nil, fmt.Errorf("could not read stored image file: %s", err)
 	}
 
