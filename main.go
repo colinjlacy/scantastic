@@ -11,7 +11,7 @@ import (
 
 type RequestParams struct {
 	scanner.ScanInstructions
-	Thumbnail bool `json: thumbnail`
+	IncludeThumbnail bool `json: includeThumbnail`
 }
 
 // our main function
@@ -29,7 +29,7 @@ func scanImage(w http.ResponseWriter, r *http.Request) {
 	var requestParams RequestParams
 	_ = json.NewDecoder(r.Body).Decode(&requestParams)
 	log.Println(requestParams)
-	filename, err := scanner.Scan(requestParams.ScanInstructions)
+	filename, thumbnail, err := scanner.Scan(requestParams.ScanInstructions)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		jsonData := map[string]string{"error": err.Error()}
@@ -37,13 +37,8 @@ func scanImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var thumb string
-	if requestParams.Thumbnail {
-		bytes, err := thumbify.ThisImage(filename)
-		if err != nil {
-			thumb = "ERROR"
-		} else {
-			thumb = string(bytes)
-		}
+	if requestParams.IncludeThumbnail {
+		thumb = string(thumbnail)
 	}
 	jsonData := map[string]string{"filename": filename, "thumbnail": thumb}
 	_ = json.NewEncoder(w).Encode(jsonData)
