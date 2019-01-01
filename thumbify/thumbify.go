@@ -6,11 +6,11 @@ import (
 	"os"
 )
 
-func ThisImageFile(f *os.File) (thumbBytes []byte, err error) {
+func ThisImageFile(folderpath , filename string) (thumbBytes []byte, err error) {
 	mw := imagick.NewMagickWand()
 	defer mw.Destroy()
 
-	if err := mw.ReadImageFile(f); err != nil {
+	if err := mw.ReadImage(folderpath + "/" + filename); err != nil {
 		return nil, fmt.Errorf("could not read stored image file: %s", err)
 	}
 
@@ -20,9 +20,18 @@ func ThisImageFile(f *os.File) (thumbBytes []byte, err error) {
 
 	h := uint(200)
 	w := uint(200)
+	thumbFolder := folderpath + "/thumbs"
+	if err = os.MkdirAll(thumbFolder, os.ModePerm); err != nil {
+		return nil, fmt.Errorf("could create thumbnail folder structure: %s", err)
+	}
 
 	if err = mw.ThumbnailImage(h, w); err != nil {
 		return nil, fmt.Errorf("could not resize image to thumbnail: %s", err)
+	}
+
+	thumbFilePath := thumbFolder + "/" + filename + ".jpg"
+	if err = mw.WriteImage(thumbFilePath); err != nil {
+		return nil, fmt.Errorf("could not write thumbnail to file: %s", err)
 	}
 
 	thumbBytes = mw.GetImagesBlob()

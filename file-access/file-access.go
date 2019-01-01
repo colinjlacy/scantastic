@@ -2,6 +2,7 @@ package file_access
 
 import (
 	"fmt"
+	"github.com/mitchellh/go-homedir"
 	"image"
 	"image/jpeg"
 	"os"
@@ -9,7 +10,8 @@ import (
 )
 
 // TODO: make env var
-const basePath = "~/Documents/scanned/"
+var home, _ = homedir.Dir()
+var basePath = home + "/Documents/scanned/"
 
 func WriteImageFile(i image.Image, filename string, filepath string) (fullFilePath string, thumbBytes []byte, err error) {
 	fullpath := basePath + filepath
@@ -32,23 +34,10 @@ func WriteImageFile(i image.Image, filename string, filepath string) (fullFilePa
 	if err = jpeg.Encode(f, i, nil); err != nil {
 		return "", []byte{}, fmt.Errorf("could not write jpeg data to file: %s", err)
 	}
-	thumbBytes, err = thumbify.ThisImageFile(f)
+	thumbBytes, err = thumbify.ThisImageFile(fullpath, filename)
 	if err != nil {
-		fmt.Println("could not generate thumbnail byte slice for the scanned image %s: %s", filename, err)
+		fmt.Println(err)
 		err = nil
-	}
-	thumbFilePath := fullpath + "/thumbs/" + filename + ".jpg"
-	t, err := os.Create(thumbFilePath)
-	if err != nil {
-		fmt.Println("could not create a thumbnail for the scanned image %s: %s", filename, err)
-		err = nil
-	} else {
-		defer t.Close()
-		_, err = t.Write(thumbBytes)
-		if err != nil {
-			fmt.Println("could not write thumbnail to file for image %s: %s", filename, err)
-			err = nil
-		}
 	}
 
 	return fullFilePath, thumbBytes,nil
