@@ -1,7 +1,6 @@
 package scanner
 
 import (
-	"encoding/base64"
 	"fmt"
 	"log"
 	"github.com/tjgq/sane"
@@ -34,7 +33,7 @@ func Scan(scanInstructions ScanInstructions) (path string, imgBase64 string, err
 	if err != nil {
 		return "", "", fmt.Errorf("could not read image from scanner: %s", err)
 	}
-	path, bytes, err := file_access.WriteImageFile(i, scanInstructions.Filename, scanInstructions.Foldername)
+	path, imgBase64, err = file_access.WriteImageFile(i, scanInstructions.Filename, scanInstructions.Foldername)
 	if err != nil {
 		return "", "", fmt.Errorf("%s", err)
 	}
@@ -42,7 +41,6 @@ func Scan(scanInstructions ScanInstructions) (path string, imgBase64 string, err
 	if err != nil {
 		return "", "", fmt.Errorf("%s", err)
 	}
-	imgBase64 = base64.StdEncoding.EncodeToString(bytes)
 	return path, imgBase64, nil
 }
 
