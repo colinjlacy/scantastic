@@ -1,12 +1,17 @@
 package file_access
 
 import (
+	"archivalist/manifest-reader"
+	"encoding/json"
 	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"image"
 	"image/jpeg"
+	"io/ioutil"
 	"os"
+	"path"
 	"scantastic/thumbify"
+	"time"
 )
 
 // TODO: make env var
@@ -40,13 +45,42 @@ func WriteImageFile(i image.Image, filename string, filepath string) (fullFilePa
 		err = nil
 	}
 
-	return fullFilePath, thumbBytes,nil
+	return fullFilePath, thumbBytes, nil
+}
+
+func WriteSummaryFile(foldername string) error {
+	s := path.Join(basePath, foldername)
+	info, err := os.Stat(s)
+	if err != nil {
+		return fmt.Errorf("could not find the specified folder")
+	}
+	if !info.IsDir() {
+		return fmt.Errorf("the specified folder is not actually a folder")
+	}
+	files, err := ioutil.ReadDir(s)
+	if !info.IsDir() {
+		return fmt.Errorf("could not read the specified folder")
+	}
+	currentTime := time.Now()
+	expires := currentTime.AddDate(0,0,7)
+	summary := manifest_reader.JobSummary{foldername, len(files), currentTime, expires}
+	jsonData, _ := json.Marshal(summary)
+	filepath := path.Join(s, "manifest.json")
+	err = ioutil.WriteFile(filepath, jsonData, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("could not write manifest file")
+	}
+	return nil
 }
 
 func pathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
-	if err == nil { return true, nil }
-	if os.IsNotExist(err) { return false, nil }
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
 	return true, err
 }
 
