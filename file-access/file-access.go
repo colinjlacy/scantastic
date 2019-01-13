@@ -48,7 +48,7 @@ func WriteImageFile(i image.Image, filename string, filepath string) (fullFilePa
 	return fullFilePath, thumbBase64, nil
 }
 
-func WriteSummaryFile(foldername string) error {
+func WriteSummaryFile(foldername string, prettyName string) error {
 	s := path.Join(basePath, foldername)
 	info, err := os.Stat(s)
 	if err != nil {
@@ -63,7 +63,7 @@ func WriteSummaryFile(foldername string) error {
 	}
 	currentTime := time.Now()
 	expires := currentTime.AddDate(0,0,7)
-	summary := manifest_reader.JobSummary{foldername, len(files), currentTime, expires}
+	summary := manifest_reader.JobSummary{foldername, prettyName, len(files), currentTime, expires}
 	jsonData, _ := json.Marshal(summary)
 	filepath := path.Join(s, "manifest.json")
 	err = ioutil.WriteFile(filepath, jsonData, os.ModePerm)

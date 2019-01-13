@@ -40,6 +40,6 @@ func scanImage(w http.ResponseWriter, r *http.Request) {
 	if requestParams.IncludeThumbnail {
 		thumb = string(thumbnail)
 	}
-	jsonData := map[string]string{"filename": filename, "thumbnail": thumb}
+	jsonData := map[string]string{"filename": filename, "thumbnail": thumb, "foldername": requestParams.Foldername, "prettyName": requestParams.PrettyName}
 	_ = json.NewEncoder(w).Encode(jsonData)
 }

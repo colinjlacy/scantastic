@@ -2,13 +2,15 @@ package scanner
 
 import (
 	"fmt"
-	"log"
 	"github.com/tjgq/sane"
+	"log"
 	"scantastic/file-access"
+	"strings"
 )
 
 type ScanInstructions struct {
-	Filename string `json: filename`
+	Filename   string `json: filename`
+	PrettyName string `json: prettyName`
 	Foldername string `json: foldername`
 }
 
@@ -18,6 +20,9 @@ func Scan(scanInstructions ScanInstructions) (path string, imgBase64 string, err
 	}
 	if scanInstructions.Foldername == "" {
 		return "", "", fmt.Errorf("bad Request: foldername was not set")
+	}
+	if scanInstructions.PrettyName == "" {
+		scanInstructions.PrettyName = strings.Title(scanInstructions.Filename)
 	}
 	devs, err := sane.Devices()
 	if err != nil {
@@ -37,7 +42,7 @@ func Scan(scanInstructions ScanInstructions) (path string, imgBase64 string, err
 	if err != nil {
 		return "", "", fmt.Errorf("%s", err)
 	}
-	err = file_access.WriteSummaryFile(scanInstructions.Foldername)
+	err = file_access.WriteSummaryFile(scanInstructions.Foldername, scanInstructions.PrettyName)
 	if err != nil {
 		return "", "", fmt.Errorf("%s", err)
 	}
