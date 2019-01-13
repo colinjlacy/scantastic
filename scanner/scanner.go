@@ -22,7 +22,7 @@ func Scan(scanInstructions ScanInstructions) (path string, imgBase64 string, err
 		return "", "", fmt.Errorf("bad Request: foldername was not set")
 	}
 	if scanInstructions.PrettyName == "" {
-		scanInstructions.PrettyName = strings.Title(scanInstructions.Filename)
+		scanInstructions.PrettyName = strings.Title(scanInstructions.Foldername)
 	}
 	devs, err := sane.Devices()
 	if err != nil {
