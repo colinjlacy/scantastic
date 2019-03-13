@@ -34,6 +34,10 @@ func Scan(scanInstructions ScanInstructions) (path string, imgBase64 string, err
 	if err != nil {
 		return "", "", fmt.Errorf("could not open a connection to a scanner: %s", err)
 	}
+	_, err = c.SetOption("resolution", 300)
+	if err != nil {
+		return "", "", fmt.Errorf("could not set image resolution: %s", err)
+	}
 	i, err := c.ReadImage()
 	if err != nil {
 		return "", "", fmt.Errorf("could not read image from scanner: %s", err)
