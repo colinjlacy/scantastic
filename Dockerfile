@@ -1,4 +1,4 @@
-FROM arm64v8/golang:1.12
+FROM arm64v8/golang:1.12.0
 
 WORKDIR /go/src/app
 COPY . .
