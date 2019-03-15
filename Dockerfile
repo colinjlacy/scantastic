@@ -3,11 +3,9 @@ FROM arm64v8/golang:1.12.0-stretch
 WORKDIR /go/src/app
 COPY . .
 
-RUN \
-    apt-get update && apt-get install -y \
-    libsane-dev \
-    imagemagick-dev \
-    --no-install-recommends
+RUN /bin/sh install libsane-dev
+    #imagemagick-dev \
+    #--no-install-recommends
 
 RUN go get -d -v ./...
 RUN go install -v ./...
