@@ -3,7 +3,7 @@ FROM arm32v7/golang:1.12.0-stretch
 WORKDIR /go/src/app
 COPY . .
 
-RUN /bin/sh install libsane-dev
+RUN apt-get install libsane-dev
     #imagemagick-dev \
     #--no-install-recommends
 
