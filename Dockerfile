@@ -1,4 +1,4 @@
-FROM arm64v8/golang:latest
+FROM arm64v8/golang:1.12.0-stretch
 
 WORKDIR /go/src/app
 COPY . .
